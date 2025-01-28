@@ -1,0 +1,18 @@
+/* Default font size for PC */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-size: 125%;
+}
+
+body {
+    background-color: #2e2e2e;
+}
+
+/* Adjust font size for phones (max width: 768px) */
+@media (max-width: 768px) {
+    * {
+        font-size: 110%;
+    }
+}
