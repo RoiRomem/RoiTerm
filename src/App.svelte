@@ -1,4 +1,15 @@
 <script lang="ts">
+  import { onMount, tick } from 'svelte';
+
+  let terminalDiv: HTMLDivElement;
+
+  const scrollToBottom = async () => {
+    await tick(); // Wait for DOM update
+    if (terminalDiv) {
+      terminalDiv.scrollTop = terminalDiv.scrollHeight;
+    }
+  };
+
   const myProjects = {
     "Ascii Language": "https://github.com/RoiRomem/Ascii-Language",
     "Frankenstien Game Framework": "https://github.com/RoiRomem/Frankenstien-Game-Framework",
@@ -53,13 +64,13 @@
           break;
         case 'ls':
           output = [...output,
-          'about.sh',
-          'projects.sh',
-          'coding.sh',
-          'frameworks.sh',
-          'learning.sh',
-          'clear',
-          'echo'
+            'about.sh',
+            'projects.sh',
+            'coding.sh',
+            'frameworks.sh',
+            'learning.sh',
+            'clear',
+            'echo'
           ];
           break;
         case 'help':
@@ -72,7 +83,19 @@
             output = [...output, command.replace(/^echo\s*/i, '')];
           }
       }
+      scrollToBottom();
     }
+  }
+
+  // Auto-scroll when component mounts
+  onMount(() => {
+    scrollToBottom();
+  });
+
+  // Watch for changes in output array
+  $: {
+    output;
+    scrollToBottom();
   }
 </script>
 
@@ -83,12 +106,13 @@
     font-family: monospace;
     padding: 20px;
     border-radius: 5px;
-    border: 2px solid black; /* Add border width and style */
-    max-width: 800px;
+    border: 2px solid black;
+    max-width: 80%;
     margin: 50px auto;
+    height: 400px; /* Fixed height for scrolling */
     overflow-y: auto;
+    scroll-behavior: smooth;
   }
-
 
   .terminal div {
     white-space: pre-wrap;
@@ -128,10 +152,9 @@
   }
 </style>
 
-<div class="terminal">
+<div class="terminal" bind:this={terminalDiv}>
   <div>
     {#each output as line}
-      <!-- Render HTML safely using {@html} -->
       <div class="command">{@html line}</div>
     {/each}
   </div>
